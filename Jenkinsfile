@@ -1,10 +1,13 @@
 pipeline {
     agent any
-
+    tools {
+            maven 'maven'
+            jdk 'java'
+    }
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
+                sh 'mvn -Dmaven.test.failure.ignore=true install'
             }
         }
         stage('Test') {
@@ -14,7 +17,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying....'
+                sh 'deploy adapters: [tomcat9(credentialsId: 'tomcat-container', path: '', url: 'http://34.207.125.72:8080/')], contextPath: '/appvacina', war: '**/*.war''
             }
         }
     }
